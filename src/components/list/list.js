@@ -2,13 +2,21 @@ import React from 'react';
 import Movie from '../Movie/movie';
 import JsonList from '../../data/list';
 import AddMovie from '../AddMovie/AddMovie';
+import orderBy from 'lodash/orderBy';
+import './list.scss';
+
+const directionDictionary = {
+    'asc': 'desc',
+    'desc': 'asc'
+};
 
 class List extends React.Component {
     constructor() {
         super();
         this.state = {
             loading: true,
-            movies: null
+            movies: null,
+            sortDirection: 'asc'
         };
 
         function closureCounter() {
@@ -61,22 +69,34 @@ class List extends React.Component {
         console.log(newMovie);
     }
 
+    handleSort = () => {
+        const sortedData = orderBy(this.state.movies, 'title', this.state.sortDirection);
+        this.setState({
+            movies: sortedData,
+            sortDirection: directionDictionary[this.state.sortDirection]
+        })
+        console.log(this.state.sortDirection);
+    }
+
     render() {
         return (
             <div>
                 {this.state.loading || !this.state.movies ? (
-                    <div>Loading...</div>) : (
-                    <ol>
-                        {this.state.movies.map((movie, index) => (
-                            <Movie
-                                key = {movie.id}
-                                data = {movie}
-                                delMovie = {this.deleteMovie.bind(this, index)}
-                            />
-                        ))}
-                    </ol>
+                    <div className={'loading'}>Loading...</div>) : (
+                        <div>
+                            <button onClick={() => this.handleSort()}>Sort by name</button>
+                            <ol>
+                                {this.state.movies.map((movie, index) => (
+                                    <Movie
+                                        key = {movie.id}
+                                        data = {movie}
+                                        delMovie = {this.deleteMovie.bind(this, index)}
+                                    />
+                                ))}
+                            </ol>
+                            <AddMovie getNewMovie = {this.addMovie}/>
+                        </div>
                 )}
-                <AddMovie getNewMovie = {this.addMovie}/>
             </div>
         );
     }

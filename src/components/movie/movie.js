@@ -1,5 +1,6 @@
 import React from 'react';
 import './movie.scss';
+
 class Movie extends React.Component {
     constructor(props) {
         super(props);
@@ -8,10 +9,12 @@ class Movie extends React.Component {
         };
         this.toggleClass= this.toggleClass.bind(this);
     }
+
     toggleClass() {
         const currentState = this.state.active;
         this.setState({ active: !currentState });
     };
+
     render() {
         return (
             <li className={this.state.active ? 'fullInfo': 'titleOnly'}
