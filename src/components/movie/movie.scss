@@ -1,0 +1,27 @@
+li {
+  cursor: pointer;
+}
+
+.fullInfo {
+  p.title {
+    display: none;
+  }
+  div.info {
+    display: block;
+    &:hover {
+      background: whitesmoke;
+    }
+  }
+}
+
+.titleOnly {
+  p.title {
+    display: block;
+    &:hover {
+      background: whitesmoke;
+    }
+  }
+  div.info {
+    display: none;
+  }
+}
