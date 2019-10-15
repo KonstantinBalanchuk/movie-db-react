@@ -22,7 +22,7 @@
   <component name="ProjectId" id="1S4DAapi67XLjeSr31MYrivC1GQ" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components/Movie2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components" />
     <property name="list.type.of.created.stylesheet" value="SCSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -30,6 +30,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\movie-db-react\src\components" />
       <recent name="D:\movie-db-react\src\components\Movie2" />
     </key>
   </component>
@@ -61,7 +62,7 @@
       <workItem from="1570950591564" duration="23071000" />
       <workItem from="1570989664201" duration="2548000" />
       <workItem from="1571039663490" duration="30577000" />
-      <workItem from="1571120072707" duration="4544000" />
+      <workItem from="1571120072707" duration="5340000" />
     </task>
     <servers />
   </component>
