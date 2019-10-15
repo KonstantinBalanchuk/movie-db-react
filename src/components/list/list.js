@@ -4,6 +4,7 @@ import JsonList from '../../data/list';
 import AddMovie from '../AddMovie/AddMovie';
 import orderBy from 'lodash/orderBy';
 import './list.scss';
+import Filter from "../Fiter/Filter";
 
 const directionDictionary = {
     'asc': 'desc',
@@ -16,7 +17,8 @@ class List extends React.Component {
         this.state = {
             loading: true,
             movies: null,
-            sortDirection: 'asc'
+            sortDirection: 'asc',
+            moviesToSort: null
         };
 
         function closureCounter() {
@@ -45,9 +47,10 @@ class List extends React.Component {
             });
             this.setState({
                 loading: false,
-                movies: value
+                movies: value,
+                moviesToSort: value
             });
-            console.log(this.state);
+            // console.log(this.state);
         });
     }
 
@@ -69,6 +72,30 @@ class List extends React.Component {
         console.log(newMovie);
     }
 
+    searchByTitle = (query) => {
+        const unfilteredList = this.state.moviesToSort;
+        console.log(query.title);
+        console.log(query.star);
+        let filteredList = unfilteredList.filter(
+            movie => {return movie['Title'].toLowerCase().indexOf(query.title) !== -1;}
+        );
+        this.setState({
+            movies: filteredList
+        });
+    }
+
+    searchByStar = (query) => {
+        const unfilteredList = this.state.moviesToSort;
+        console.log(query.title);
+        console.log(query.star);
+        let filteredList = unfilteredList.filter(
+            movie => {return movie["Stars"].join('').toLowerCase().indexOf(query.star) !== -1;}
+        );
+        this.setState({
+            movies: filteredList
+        });
+    }
+
     handleSort = () => {
         const sortedData = orderBy(this.state.movies, 'title', this.state.sortDirection);
         this.setState({
@@ -85,6 +112,9 @@ class List extends React.Component {
                     <div className={'loading'}>Loading...</div>) : (
                         <div>
                             <button onClick={() => this.handleSort()}>Sort by name</button>
+                            <Filter queryTitle = {this.searchByTitle}
+                                    queryStar = {this.searchByStar}
+                            />
                             <ol>
                                 {this.state.movies.map((movie, index) => (
                                     <Movie
