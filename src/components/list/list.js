@@ -1,10 +1,10 @@
 import React from 'react';
 import Movie from '../Movie/movie';
 import JsonList from '../../data/list';
-import AddMovie from '../AddMovie/AddMovie';
+import AddMovie from '../AddMovie/index';
 import orderBy from 'lodash/orderBy';
 import './list.scss';
-import Filter from "../Fiter/Filter";
+import Filter from "../Fiter";
 
 const directionDictionary = {
     'asc': 'desc',
@@ -113,7 +113,7 @@ class List extends React.Component {
                         <div>
                             <button onClick={() => this.handleSort()}>Sort by name</button>
                             <Filter queryTitle = {this.searchByTitle}
-                                    queryStar = {this.searchByStar}
+                                   queryStar = {this.searchByStar}
                             />
                             <ol>
                                 {this.state.movies.map((movie, index) => (

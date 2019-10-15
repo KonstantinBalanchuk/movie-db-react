@@ -19,14 +19,16 @@ class Movie extends React.Component {
         return (
             <li className={this.state.active ? 'fullInfo': 'titleOnly'}
                 onClick={this.toggleClass} >
-                <p className={'title'}>{this.props.data.title}</p>
-                <div className="info">
-                    <p>Title: {this.props.data.title}</p>
-                    <p>Release Year: {this.props.data.year}</p>
-                    <p>Format: {this.props.data.format}</p>
-                    <p>Stars: {this.props.data.stars}</p>
+                <div className={''}>
+                    <p className={'title'}>{this.props.data.title}</p>
+                    <div className="info">
+                        <p>Title: {this.props.data.title}</p>
+                        <p>Release Year: {this.props.data.year}</p>
+                        <p>Format: {this.props.data.format}</p>
+                        <p>Stars: {this.props.data.stars}</p>
+                    </div>
+                    <button onClick={this.props.delMovie}>Delete</button>
                 </div>
-                <button onClick={this.props.delMovie}>Delete</button>
             </li>
         );
     }
