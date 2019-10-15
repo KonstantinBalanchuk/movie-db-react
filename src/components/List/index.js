@@ -6,11 +6,6 @@ import orderBy from 'lodash/orderBy';
 import './index.scss';
 import Filter from "../Fiter";
 
-const directionDictionary = {
-    'asc': 'desc',
-    'desc': 'asc'
-};
-
 class List extends React.Component {
     constructor() {
         super();
@@ -20,15 +15,7 @@ class List extends React.Component {
             sortDirection: 'asc',
             moviesToSort: null
         };
-
-        function closureCounter() {
-            let localCounter = 0;
-            return function() {
-                return localCounter++;
-            }
-        }
-
-        this.counter = closureCounter();
+        this._counter = 0;
     }
 
     componentDidMount() {
@@ -38,82 +25,74 @@ class List extends React.Component {
             }, 2000);
         });
         promiseList.then(value => {
-            value.forEach(movie => {
-                movie.id = this.counter();
+            const movies = value.map(movie => {
+                movie.id = this.newItemId;
+                // movie.id = this.counter();
                 movie.title = movie["Title"];
                 movie.year = movie["Release Year"];
                 movie.format = movie["Format"];
                 movie.stars = movie["Stars"].join(', ');
+                return movie;
             });
             this.setState({
                 loading: false,
-                movies: value,
-                moviesToSort: value
+                moviesToSort: movies,
+                movies
             });
-            // console.log(this.state);
         });
+    }
+
+    get newItemId() {
+        return this._counter++;
     }
 
     deleteMovie = (index) => {
-        const movies = [...[], ...this.state.movies]
-        movies.splice(index, 1);
+        const movies = this.state.movies;
+        const listWithDeletedItem = [...movies.slice(0, index), ...movies.slice(index+1)]
         this.setState({
-            movies: movies
+            movies: listWithDeletedItem
         });
-    }
+    };
 
     addMovie = (newMovie) => {
-        newMovie.id = this.counter();
-        const newMovieList = [...[], ...this.state.movies];
-        newMovieList.push(newMovie);
+        newMovie.id = this.newItemId;
+        const newMovieList = [...this.state.movies, newMovie];
         this.setState({
             movies: newMovieList
         });
-        console.log(newMovie);
-    }
+    };
 
-    searchByTitle = (query) => {
-        const unfilteredList = this.state.moviesToSort;
-        console.log(query.title);
-        console.log(query.star);
-        let filteredList = unfilteredList.filter(
-            movie => {return movie['Title'].toLowerCase().indexOf(query.title) !== -1;}
-        );
+
+    searchByQuery = (query) => {
+        const filteredList = this.state.moviesToSort
+            .filter( movie => {
+                const byTitle = movie["Title"].toLowerCase().indexOf(query.title) !== -1;
+                const byStar = movie["Stars"].join('').toLowerCase().indexOf(query.star) !== -1;
+                return byTitle && byStar;
+            });
         this.setState({
             movies: filteredList
         });
-    }
-
-    searchByStar = (query) => {
-        const unfilteredList = this.state.moviesToSort;
-        console.log(query.title);
-        console.log(query.star);
-        let filteredList = unfilteredList.filter(
-            movie => {return movie["Stars"].join('').toLowerCase().indexOf(query.star) !== -1;}
-        );
-        this.setState({
-            movies: filteredList
-        });
-    }
+    };
 
     handleSort = () => {
+        const sortDirection = this.state.sortDirection === 'asc' ? 'desc' : 'asc';
         const sortedData = orderBy(this.state.movies, 'title', this.state.sortDirection);
         this.setState({
             movies: sortedData,
-            sortDirection: directionDictionary[this.state.sortDirection]
+            sortDirection
         })
-        console.log(this.state.sortDirection);
-    }
+    };
 
     render() {
         return (
             <div>
                 {this.state.loading || !this.state.movies ? (
                     <div className={'loading'}>Loading...</div>) : (
-                        <div>
+                        <div className={'container'}>
                             <button onClick={() => this.handleSort()}>Sort by name</button>
-                            <Filter queryTitle = {this.searchByTitle}
-                                   queryStar = {this.searchByStar}
+                            <Filter queryTitle = {this.searchByQuery}
+                                    queryStar = {this.searchByQuery}
                             />
                             <ol>
                                 {this.state.movies.map((movie, index) => (

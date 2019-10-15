@@ -7,6 +7,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button {
+  background-color: indigo; /* Green */
+  border: none;
+  border-radius: 3px;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+input {
+  width: 50%;
+  height: 40px;
+  border: none;
+  border-bottom:1px solid indigo;
+  padding: 0 0 0 5px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

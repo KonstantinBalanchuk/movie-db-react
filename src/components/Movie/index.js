@@ -2,24 +2,18 @@ import React from 'react';
 import './index.scss';
 
 class Movie extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            active: false,
-        };
-        this.toggleClass= this.toggleClass.bind(this);
-    }
+    state = {active: false}
 
-    toggleClass() {
+    toggleClass = () => {
         const currentState = this.state.active;
         this.setState({ active: !currentState });
-    };
+    }
 
     render() {
         return (
             <li className={this.state.active ? 'fullInfo': 'titleOnly'}
                 onClick={this.toggleClass} >
-                <div className={''}>
+                <div className={'card'}>
                     <p className={'title'}>{this.props.data.title}</p>
                     <div className="info">
                         <p>Title: {this.props.data.title}</p>

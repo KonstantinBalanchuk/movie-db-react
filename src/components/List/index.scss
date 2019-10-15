@@ -1,3 +1,6 @@
+.container {
+  margin: 0 auto;
+}
 .loading {
   width: 100%;
   height: 100vh;
@@ -5,4 +8,34 @@
   justify-content: center;
   align-items: center;
   font-size: 20px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 479px){
+  .container {
+    width: 90%;
+  }
+}
+
+@media screen and (min-width: 480px) and (max-width: 767px){
+  .container {
+    width: 90%;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px){
+  .container {
+    width: 720px;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .container {
+    width: 960px;
+  }
+}
+
+@media screen and (min-width: 1900px) {
+  .container {
+    width: 1140px;
+  }
 }

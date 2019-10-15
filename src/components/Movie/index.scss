@@ -1,27 +1,36 @@
-li {
-  cursor: pointer;
-}
-
 .fullInfo {
   p.title {
     display: none;
   }
   div.info {
     display: block;
-    &:hover {
-      background: whitesmoke;
-    }
   }
 }
 
 .titleOnly {
   p.title {
     display: block;
-    &:hover {
-      background: whitesmoke;
-    }
   }
   div.info {
     display: none;
+  }
+}
+
+.card {
+  margin: 10px 0;
+  cursor: pointer;
+  min-width: 370px;
+  display: inline-block;
+  padding: 10px 20px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  &:hover{
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 479px){
+  .card {
+    width: 100%;
   }
 }

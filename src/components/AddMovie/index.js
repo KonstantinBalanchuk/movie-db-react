@@ -1,20 +1,15 @@
 import React from 'react';
+import './index.scss';
 
 class AddMovie extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-                title: '',
-                year: '',
-                format: '',
-                stars: ''
-        };
+    state = {
+        title: '',
+        year: '',
+        format: '',
+        stars: ''
+    };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.addItem = this.addItem.bind(this);
-    }
-
-    handleChange(event) {
+    handleChange = (event) => {
         const value = event.target.value;
         this.setState({
             [event.target.name]: value
@@ -35,6 +30,7 @@ class AddMovie extends React.Component {
     render() {
         return (
             <div>
+                <h1>Add movie</h1>
                 <form className={'add-user'} onSubmit={(e) => {this.addItem(e)}}>
                     <div>
                         <label htmlFor={'title'}>Movie title:</label>

@@ -1,24 +1,20 @@
 import React from 'react';
+import './index.scss';
 
 class Filter extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            title: '',
-            star: ''
-        };
-        this.updateSearchByTitle = this.updateSearchByTitle.bind(this);
-        this.updateSearchByStar = this.updateSearchByStar.bind(this);
-    }
+    state = {
+        title: '',
+        star: ''
+    };
 
-    updateSearchByTitle(event) {
+    updateSearchByTitle = (event) => {
         const value = event.target.value;
         this.setState({
             [event.target.name]: value
         }, this.searchByTitle);
     }
 
-    updateSearchByStar(event) {
+    updateSearchByStar = (event) => {
         const value = event.target.value;
         this.setState({
             [event.target.name]: value
@@ -35,7 +31,7 @@ class Filter extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className={'form'}>
                 <div>
                     <label htmlFor={'title'}>Search by title:</label>
                     <input type={'text'}
