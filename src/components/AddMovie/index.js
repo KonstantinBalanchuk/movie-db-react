@@ -5,25 +5,67 @@ class AddMovie extends React.Component {
     state = {
         title: '',
         year: '',
-        format: '',
-        stars: ''
+        format: 'DVD',
+        stars: '',
+        yearValidation: false,
+        starValidation: false,
+        duplicate: false
     };
 
     handleChange = (event) => {
         const value = event.target.value;
         this.setState({
             [event.target.name]: value
+        }, this.validation);
+    };
+
+    handleSelect = (event) => {
+        this.setState({
+            format: event.target.value
         });
-    }
+    };
+
+    validation = () => {
+        const yearActivate = this.state.year !== '';
+        const numberYear = this.state.year;
+        let starsArray = this.state.stars;
+        starsArray.toString().split('').map(element => element.toLowerCase());
+        let result =  starsArray.split(new RegExp(', '));
+        let repeatResult = new Set(result);
+
+        const inputMovie = this.state;
+        const titleDuplicate = this.props.movieList.filter(movie => movie.title === inputMovie.title);
+        const yearDuplicate = titleDuplicate.filter(movie => Number(movie.year) === Number(inputMovie.year));
+        if(yearDuplicate.length > 0) {
+            const duplicatedStars = yearDuplicate.map(movie => movie.stars);
+            if(duplicatedStars.length > 1) {
+                this.setState({
+                    duplicate: false
+                });
+            } else {
+                duplicatedStars.join(', ');
+                this.setState({
+                    duplicate: duplicatedStars.includes(starsArray)
+                });
+            }
+
+        }
+
+        this.setState({
+            yearValidation: (!(isNaN(numberYear) || numberYear < 1850 || numberYear > 2020) && yearActivate),
+            starValidation: (result.length === repeatResult.size)
+        });
+    };
 
     addItem(e) {
         e.preventDefault();
+        this.validation(this.state.year);
         const inputMovie = this.state;
         this.props.getNewMovie(inputMovie);
         this.setState({
             title: '',
             year: '',
-            format: '',
+            format: 'DVD',
             stars: ''
         });
     }
@@ -40,10 +82,12 @@ class AddMovie extends React.Component {
                                name={'title'}
                                value={this.state.title}
                                onChange={this.handleChange}
+                               required
                         />
                     </div>
                     <div>
-                        <label htmlFor={'year'}>Release Year:</label>
+                        <label htmlFor={'year'}>Release Year: {this.state.year === '' || this.state.yearValidation ?
+                            (<span></span>) : (<span className={'invalid'}>Invalid value</span>)}</label>
                         <input type={'text'}
                                placeholder={'Year'}
                                id={'year'}
@@ -53,17 +97,16 @@ class AddMovie extends React.Component {
                         />
                     </div>
                     <div>
-                        <label htmlFor={'format'}>Format:</label>
-                        <input type={'text'}
-                               placeholder={'Format'}
-                               id={'format'}
-                               name={'format'}
-                               value={this.state.format}
-                               onChange={this.handleChange}
-                        />
+                        <p className={'format'}>Format:</p>
+                        <select value={this.state.format} onChange={this.handleSelect}>
+                            <option value="DVD">DVD</option>
+                            <option value="Blu-Ray">Blu-Ray</option>
+                            <option value="VHS">VHS</option>
+                        </select>
                     </div>
                     <div>
-                        <label htmlFor={'stars'}>Stars:</label>
+                        <label htmlFor={'stars'}>Stars: {this.state.stars === '' || this.state.starValidation ?
+                            (<span></span>) : (<span className={'invalid'}>Invalid value</span>)}</label>
                         <input type={'text'}
                                placeholder={'Stars'}
                                id={'stars'}
@@ -72,7 +115,8 @@ class AddMovie extends React.Component {
                                onChange={this.handleChange}
                         />
                     </div>
-                    <button type={'submit'}>Add</button>
+                    {this.state.duplicate ? (<div className={'invalid'}>Duplicate movies</div>) : (<span></span>)}
+                    <button type={'submit'} disabled={((this.state.year !== '') && !this.state.yearValidation) || !this.state.starValidation || this.state.duplicate}>Add</button>
                 </form>
             </div>
         );

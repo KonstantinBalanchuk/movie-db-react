@@ -2,12 +2,12 @@ import React from 'react';
 import './index.scss';
 
 class Movie extends React.Component {
-    state = {active: false}
+    state = {active: false};
 
     toggleClass = () => {
         const currentState = this.state.active;
         this.setState({ active: !currentState });
-    }
+    };
 
     render() {
         return (

@@ -2,7 +2,7 @@ div h1 {
   font-size: 30px;
   font-weight: 500;
 }
-label {
+label, p.format {
   display: block;
   font-weight: bold;
   margin: 0 0 3px 0;
@@ -19,4 +19,10 @@ label {
   & div {
     margin-bottom: 10px;
   }
+}
+
+.invalid {
+  margin: 0 10px;
+  color: red;
+  display: inline;
 }
