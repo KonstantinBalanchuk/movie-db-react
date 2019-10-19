@@ -28,7 +28,6 @@ class List extends React.Component {
         promiseList.then(value => {
             const movies = value.map(movie => {
                 movie.id = this.newItemId;
-                // movie.id = this.counter();
                 movie.title = movie["Title"];
                 movie.year = movie["Release Year"];
                 movie.format = movie["Format"];
@@ -80,7 +79,7 @@ class List extends React.Component {
 
     handleSort = () => {
         const sortDirection = this.state.sortDirection === 'asc' ? 'desc' : 'asc';
-        const sortedData = orderBy(this.state.movies, 'title', this.state.sortDirection);
+        const sortedData = orderBy(this.state.movies, [movie => movie.title.toLowerCase()], this.state.sortDirection);
         this.setState({
             movies: sortedData,
             sortDirection
@@ -88,7 +87,6 @@ class List extends React.Component {
     };
 
     render() {
-        // console.log(this.state.movies);
         return (
             <div>
                 {this.state.loading || !this.state.movies ? (

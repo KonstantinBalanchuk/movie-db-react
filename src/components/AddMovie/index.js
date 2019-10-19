@@ -1,5 +1,6 @@
 import React from 'react';
 import './index.scss';
+import Confirmation from "../Confirmation";
 
 class AddMovie extends React.Component {
     state = {
@@ -105,7 +106,7 @@ class AddMovie extends React.Component {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor={'stars'}>Stars: {this.state.stars === '' || this.state.starValidation ?
+                        <label htmlFor={'stars'}>Stars: {(this.state.stars === '' || this.state.starValidation) ?
                             (<span></span>) : (<span className={'invalid'}>Invalid value</span>)}</label>
                         <input type={'text'}
                                placeholder={'Stars'}
@@ -115,8 +116,8 @@ class AddMovie extends React.Component {
                                onChange={this.handleChange}
                         />
                     </div>
-                    {this.state.duplicate ? (<div className={'invalid'}>Duplicate movies</div>) : (<span></span>)}
                     <button type={'submit'} disabled={((this.state.year !== '') && !this.state.yearValidation) || !this.state.starValidation || this.state.duplicate}>Add</button>
+                    {this.state.duplicate && (<div className={'invalid'}>Duplicate movies</div>)}
                 </form>
             </div>
         );

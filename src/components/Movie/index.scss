@@ -1,25 +1,15 @@
-.fullInfo {
-  p.title {
-    display: none;
-  }
-  div.info {
-    display: block;
-  }
+.title {
+  font-weight: 500;
+  font-size: 24px;
 }
-
-.titleOnly {
-  p.title {
-    display: block;
-  }
-  div.info {
-    display: none;
-  }
+p.open-info {
+  cursor: pointer;
+  color: dimgray;
 }
 
 .card {
   margin: 10px 0;
-  cursor: pointer;
-  min-width: 370px;
+  width: 370px;
   display: inline-block;
   padding: 10px 20px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);

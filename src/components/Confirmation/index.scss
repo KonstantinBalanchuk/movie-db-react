@@ -1,0 +1,17 @@
+.modalWindow {
+  position: absolute;
+  background: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: dimgray 1px solid;
+  border-radius: 3px;
+  padding: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  & h1 {
+    display: block;
+    font-weight: 500;
+  }
+}
