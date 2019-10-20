@@ -19,6 +19,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
   <component name="ProjectId" id="1S4DAapi67XLjeSr31MYrivC1GQ" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -67,7 +73,9 @@
       <workItem from="1571285020083" duration="2040000" />
       <workItem from="1571314660432" duration="21288000" />
       <workItem from="1571376713776" duration="22095000" />
-      <workItem from="1571472162172" duration="22965000" />
+      <workItem from="1571472162172" duration="23604000" />
+      <workItem from="1571551616288" duration="20510000" />
+      <workItem from="1571590866296" duration="13615000" />
     </task>
     <servers />
   </component>

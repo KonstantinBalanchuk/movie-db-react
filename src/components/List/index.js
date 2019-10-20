@@ -1,45 +1,22 @@
 import React from 'react';
 import Movie from '../Movie/index';
-import JsonList from '../../data/list';
 import AddMovie from '../AddMovie/index';
 import orderBy from 'lodash/orderBy';
 import './index.scss';
 import Filter from "../Fiter";
+import Upload from "../Upload";
 
 class List extends React.Component {
     constructor() {
         super();
         this.state = {
-            loading: true,
+            alertNotUploaded: true,
             movies: null,
             sortDirection: 'asc',
             moviesToSort: null,
             noResults: false
         };
         this._counter = 0;
-    }
-
-    componentDidMount() {
-        let promiseList = new Promise(function(resolve, reject) {
-            setTimeout(function() {
-                resolve(JsonList);
-            }, 2000);
-        });
-        promiseList.then(value => {
-            const movies = value.map(movie => {
-                movie.id = this.newItemId;
-                movie.title = movie["Title"];
-                movie.year = movie["Release Year"];
-                movie.format = movie["Format"];
-                movie.stars = movie["Stars"].join(', ');
-                return movie;
-            });
-            this.setState({
-                loading: false,
-                moviesToSort: movies,
-                movies
-            });
-        });
     }
 
     get newItemId() {
@@ -56,25 +33,42 @@ class List extends React.Component {
 
     addMovie = (newMovie) => {
         newMovie.id = this.newItemId;
-        const newMovieList = [...this.state.movies, newMovie];
-        this.setState({
-            movies: newMovieList,
-            moviesToSort: newMovieList
-        });
+        if(this.state.movies) {
+            const newMovieList = [...this.state.movies, newMovie];
+            this.setState({
+                alertNotUploaded: false,
+                movies: newMovieList,
+                moviesToSort: newMovieList
+            });
+        } else {
+            const newMovieList = [];
+            newMovieList.push(newMovie);
+            this.setState({
+                alertNotUploaded: false,
+                movies: newMovieList,
+                moviesToSort: newMovieList
+            });
+        }
     };
 
 
     searchByQuery = (query) => {
-        const filteredList = this.state.moviesToSort
-            .filter( movie => {
-                const byTitle = movie.title.toLowerCase().indexOf(query.title) !== -1;
-                const byStar = Array.prototype.join.call(movie.stars, '').toLowerCase().indexOf(query.star) !== -1;
-                return byTitle && byStar;
+        if(this.state.moviesToSort) {
+            const filteredList = this.state.moviesToSort
+                .filter( movie => {
+                    const byTitle = movie.title.toLowerCase().indexOf(query.title.toLowerCase()) !== -1;
+                    const byStar = Array.prototype.join.call(movie.stars, '').toLowerCase().indexOf(query.star.toLowerCase()) !== -1;
+                    return byTitle && byStar;
+                });
+            this.setState({
+                movies: filteredList,
+                noResults: filteredList.length === 0
             });
-        this.setState({
-            movies: filteredList,
-            noResults: filteredList.length === 0
-        });
+        } else {
+            this.setState({
+                noResults: true
+            })
+        }
     };
 
     handleSort = () => {
@@ -86,31 +80,63 @@ class List extends React.Component {
         })
     };
 
+    getMovies = (list) => {
+        if(list) {
+            const movies = list.text.map(movie => {
+                movie.id = this.newItemId;
+                movie.title = movie["Title"];
+                movie.year = movie["Release Year"];
+                movie.format = movie["Format"];
+                movie.stars = movie["Stars"];
+                return movie;
+            });
+            if(this.state.movies) {
+                const newMovieList = [...this.state.movies, ...movies];
+                this.setState({
+                    alertNotUploaded: false,
+                    moviesToSort: newMovieList,
+                    movies: newMovieList
+                });
+            } else {
+                this.setState({
+                    alertNotUploaded: false,
+                    movies: movies,
+                    moviesToSort: movies
+                });
+            }
+        } else {
+            this.setState({
+                alertNotUploaded: true
+            })
+        }
+    };
+
     render() {
         return (
             <div>
-                {this.state.loading || !this.state.movies ? (
-                    <div className={'loading'}>Loading...</div>) : (
-                        <div className={'container'}>
-                            <button onClick={() => this.handleSort()}>Sort by name</button>
-                            <Filter queryTitle = {this.searchByQuery}
-                                    queryStar = {this.searchByQuery}
-                            />
-                            <h1 className={this.state.noResults ? 'no-results': 'display-none'}>No results</h1>
-                            <ol>
-                                {this.state.movies.map((movie, index) => (
-                                    <Movie
-                                        key = {movie.id}
-                                        data = {movie}
-                                        delMovie = {this.deleteMovie.bind(this, index)}
-                                    />
-                                ))}
-                            </ol>
-                            <AddMovie getNewMovie = {this.addMovie}
-                                      movieList = {this.state.moviesToSort}
-                            />
-                        </div>
-                )}
+                <div className={'container'}>
+                    <button onClick={() => this.handleSort()}>Sort by name</button>
+                    <Filter queryTitle = {this.searchByQuery}
+                            queryStar = {this.searchByQuery}
+                    />
+                    <h1 className={this.state.noResults ? 'no-results': 'display-none'}>No results</h1>
+                    <Upload getMovieList = {this.getMovies}/>
+                    {this.state.alertNotUploaded || !this.state.movies ? (
+                    <p className={'no-results'}>Movies are not uploaded yet</p>) : (
+                        <ol>
+                            {this.state.movies.map((movie, index) => (
+                                <Movie
+                                    key = {movie.id}
+                                    data = {movie}
+                                    delMovie = {this.deleteMovie.bind(this, index)}
+                                />
+                            ))}
+                        </ol>
+                    )}
+                    <AddMovie getNewMovie = {this.addMovie}
+                              movieList = {this.state.moviesToSort}
+                    />
+                </div>
             </div>
         );
     }

@@ -21,7 +21,7 @@ button {
   cursor: pointer;
 }
 
-input {
+input[type=text] {
   width: 50%;
   height: 40px;
   border: none;
@@ -32,4 +32,10 @@ input {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.invalid {
+  margin: 0 10px;
+  color: red;
+  display: inline;
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import './index.scss';
-import Confirmation from "../Confirmation";
 
 class AddMovie extends React.Component {
     state = {
@@ -31,27 +30,20 @@ class AddMovie extends React.Component {
         const numberYear = this.state.year;
         let starsArray = this.state.stars;
         starsArray.toString().split('').map(element => element.toLowerCase());
-        let result =  starsArray.split(new RegExp(', '));
+        let result =  starsArray.split(new RegExp(','))
+            .map(name => name.trim());
         let repeatResult = new Set(result);
-
-        const inputMovie = this.state;
-        const titleDuplicate = this.props.movieList.filter(movie => movie.title === inputMovie.title);
-        const yearDuplicate = titleDuplicate.filter(movie => Number(movie.year) === Number(inputMovie.year));
-        if(yearDuplicate.length > 0) {
-            const duplicatedStars = yearDuplicate.map(movie => movie.stars);
-            if(duplicatedStars.length > 1) {
-                this.setState({
-                    duplicate: false
-                });
-            } else {
-                duplicatedStars.join(', ');
-                this.setState({
-                    duplicate: duplicatedStars.includes(starsArray)
-                });
+        if(this.props.movieList) {
+            const listToValidate = this.props.movieList.filter( movie => movie.title.toLowerCase().indexOf(this.state.title.toLowerCase()) !== -1);
+            if(listToValidate) {
+                const yearDuplicate = listToValidate.filter(movie => movie.year.indexOf(this.state.year) !== -1);
+                if(yearDuplicate) {
+                    this.setState({
+                        duplicate: yearDuplicate.length > 0
+                    });
+                }
             }
-
         }
-
         this.setState({
             yearValidation: (!(isNaN(numberYear) || numberYear < 1850 || numberYear > 2020) && yearActivate),
             starValidation: (result.length === repeatResult.size)
