@@ -1,40 +1,26 @@
 import React from 'react';
 import './index.scss';
 
-class Confirmation extends React.Component {
-    state = {
-        canceled: false,
-        confirmed: false
-    };
+export default function Confirmation(props) {
+  function hide() {
+    toggleConfirmation(false);
+  }
 
-    hide = () => {
-        this.setState({
-            canceled: true
-        }, this.setStatus);
-    };
+  function confirm() {
+    toggleConfirmation(true);
+  }
 
-    confirm = () => {
-        this.setState({
-            confirmed: true,
-            canceled: false
-        }, this.setStatus);
-    };
+  function toggleConfirmation(option) {
+    props.workWithModal(option);
+  }
 
-    setStatus() {
-        this.props.workWithModal(this.state);
-    }
-
-    render() {
-        return (
-            <div className={'modalWindow'}>
-                <h1>Are you sure?</h1>
-                <div>
-                    <button onClick={this.confirm}>Yes, delete movie</button>
-                    <button onClick={this.hide}>No</button>
-                </div>
-            </div>
-        )
-    }
+  return (
+    <div className={'modalWindow'}>
+      <h1>Are you sure?</h1>
+      <div>
+        <button onClick={confirm}>Yes, delete movie</button>
+        <button onClick={hide}>No</button>
+      </div>
+    </div>
+  );
 }
-
-export default Confirmation;

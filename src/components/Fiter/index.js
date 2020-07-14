@@ -1,60 +1,45 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './index.scss';
 
-class Filter extends React.Component {
-    state = {
-        title: '',
-        star: ''
-    };
+export default function Filter(props) {
+  const [values, setValues] = useState({
+    stars: '',
+    title: ''
+  });
 
-    updateSearchByTitle = (event) => {
-        const value = event.target.value;
-        this.setState({
-            [event.target.name]: value
-        }, this.searchByTitle);
-    }
+  useEffect(() => {
+      props.searchQuery(values);
+  }, [values]);
 
-    updateSearchByStar = (event) => {
-        const value = event.target.value;
-        this.setState({
-            [event.target.name]: value
-        }, this.searchByStar);
-    }
+  const searchQuery = (event) => {
+    const { target } = event;
+    const { name, value } = target;
+    event.persist();
+    setValues({ ...values, [name]: value });
+  }
 
-    searchByTitle() {
-        this.props.queryTitle(this.state);
-    }
-
-    searchByStar() {
-        this.props.queryStar(this.state);
-    }
-
-    render() {
-        return (
-            <div className={'form'}>
-                <div>
-                    <label htmlFor={'title'}>Search by title:</label>
-                    <input type={'text'}
-                           placeholder={'Search...'}
-                           id={'title'}
-                           name={'title'}
-                           value={this.state.title}
-                           onChange={this.updateSearchByTitle}
-                    />
-                </div>
-                <div>
-                    <label htmlFor={'star'}>Search by star:</label>
-                    <input type={'text'}
-                           placeholder={'Search...'}
-                           id={'star'}
-                           name={'star'}
-                           value={this.state.star}
-                           onChange={this.updateSearchByStar}
-                    />
-                </div>
-            </div>
-        )
-    }
+  return (
+    <div className={'form'}>
+      <div>
+        <label htmlFor={'title'}>Search by title:</label>
+        <input type={'text'}
+               placeholder={'Search...'}
+               id={'title'}
+               name={'title'}
+               value={values.title}
+               onChange={searchQuery}
+        />
+      </div>
+      <div>
+        <label htmlFor={'star'}>Search by star:</label>
+        <input type={'text'}
+               placeholder={'Search...'}
+               id={'stars'}
+               name={'stars'}
+               value={values.stars}
+               onChange={searchQuery}
+        />
+      </div>
+    </div>
+  )
 }
-
-export default Filter;

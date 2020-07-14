@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Movie from '../Movie/index';
 import AddMovie from '../AddMovie/index';
 import orderBy from 'lodash/orderBy';
@@ -6,140 +6,134 @@ import './index.scss';
 import Filter from "../Fiter";
 import Upload from "../Upload";
 
-class List extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            alertNotUploaded: true,
-            movies: null,
-            sortDirection: 'asc',
-            moviesToSort: null,
-            noResults: false
-        };
-        this._counter = 0;
-    }
+export default function List() {
+  const [values, setValues] = useState({
+    alertNotUploaded: true,
+    movies: null,
+    sortDirection: 'asc',
+    moviesToSort: null,
+    noResults: false
+  });
 
-    get newItemId() {
-        return this._counter++;
+  function simpleCounter() {
+    let counter = 0;
+    return function () {
+      ++counter;
     }
+  }
 
-    deleteMovie = (index) => {
-        const movies = this.state.movies;
-        const listWithDeletedItem = [...movies.slice(0, index), ...movies.slice(index+1)]
-        this.setState({
-            movies: listWithDeletedItem
+  const newItemId = simpleCounter();
+
+  const deleteMovie = (index) => {
+    // e.persist();
+    // const index = e.target.dataset.index;
+    console.log(index);
+    const movies = values.movies;
+    const listWithDeletedItem = [...movies.slice(0, index), ...movies.slice(index + 1)];
+
+    setValues({ ...values, movies: listWithDeletedItem });
+  };
+
+  const addMovie = (newMovie) => {
+    newMovie.id = newItemId();
+    const newMovieList = values.movies ? [...values.movies, newMovie] : [...[], newMovie];
+    setValues({
+      ...values,
+      alertNotUploaded: false,
+      movies: newMovieList,
+      moviesToSort: newMovieList
+    });
+  };
+
+
+  const searchByQuery = (query) => {
+    if (values.moviesToSort) {
+      const filteredList = values.moviesToSort
+        .filter(movie => {
+          const byTitle = movie.title.toLowerCase().indexOf(query.title.toLowerCase()) !== -1;
+          const byStar = Array.prototype.join.call(movie.stars, '').toLowerCase().indexOf(query.stars.toLowerCase()) !== -1;
+          return byTitle && byStar;
         });
-    };
-
-    addMovie = (newMovie) => {
-        newMovie.id = this.newItemId;
-        if(this.state.movies) {
-            const newMovieList = [...this.state.movies, newMovie];
-            this.setState({
-                alertNotUploaded: false,
-                movies: newMovieList,
-                moviesToSort: newMovieList
-            });
-        } else {
-            const newMovieList = [];
-            newMovieList.push(newMovie);
-            this.setState({
-                alertNotUploaded: false,
-                movies: newMovieList,
-                moviesToSort: newMovieList
-            });
-        }
-    };
-
-
-    searchByQuery = (query) => {
-        if(this.state.moviesToSort) {
-            const filteredList = this.state.moviesToSort
-                .filter( movie => {
-                    const byTitle = movie.title.toLowerCase().indexOf(query.title.toLowerCase()) !== -1;
-                    const byStar = Array.prototype.join.call(movie.stars, '').toLowerCase().indexOf(query.star.toLowerCase()) !== -1;
-                    return byTitle && byStar;
-                });
-            this.setState({
-                movies: filteredList,
-                noResults: filteredList.length === 0
-            });
-        } else {
-            this.setState({
-                noResults: true
-            })
-        }
-    };
-
-    handleSort = () => {
-        const sortDirection = this.state.sortDirection === 'asc' ? 'desc' : 'asc';
-        const sortedData = orderBy(this.state.movies, [movie => movie.title.toLowerCase()], this.state.sortDirection);
-        this.setState({
-            movies: sortedData,
-            sortDirection
-        })
-    };
-
-    getMovies = (list) => {
-        if(list) {
-            const movies = list.text.map(movie => {
-                movie.id = this.newItemId;
-                movie.title = movie["Title"];
-                movie.year = movie["Release Year"];
-                movie.format = movie["Format"];
-                movie.stars = movie["Stars"];
-                return movie;
-            });
-            if(this.state.movies) {
-                const newMovieList = [...this.state.movies, ...movies];
-                this.setState({
-                    alertNotUploaded: false,
-                    moviesToSort: newMovieList,
-                    movies: newMovieList
-                });
-            } else {
-                this.setState({
-                    alertNotUploaded: false,
-                    movies: movies,
-                    moviesToSort: movies
-                });
-            }
-        } else {
-            this.setState({
-                alertNotUploaded: true
-            })
-        }
-    };
-
-    render() {
-        return (
-            <div>
-                <div className={'container'}>
-                    <button onClick={() => this.handleSort()}>Sort by name</button>
-                    <Filter queryTitle = {this.searchByQuery}
-                            queryStar = {this.searchByQuery}
-                    />
-                    <h1 className={this.state.noResults ? 'no-results': 'display-none'}>No results</h1>
-                    <Upload getMovieList = {this.getMovies}/>
-                    {this.state.alertNotUploaded || !this.state.movies ? (
-                    <p className={'no-results'}>Movies are not uploaded yet</p>) : (
-                        <ol>
-                            {this.state.movies.map((movie, index) => (
-                                <Movie
-                                    key = {movie.id}
-                                    data = {movie}
-                                    delMovie = {this.deleteMovie.bind(this, index)}
-                                />
-                            ))}
-                        </ol>
-                    )}
-                    <AddMovie getNewMovie = {this.addMovie}
-                              movieList = {this.state.moviesToSort}
-                    />
-                </div>
-            </div>
-        );
+      setValues({
+        ...values,
+        movies: filteredList,
+        noResults: filteredList.length === 0
+      });
+    } else {
+      setValues({
+        ...values,
+        noResults: true
+      });
     }
-}
+  };
 
-export default List;
+  const handleSort = () => {
+    const sortDirection = values.sortDirection === 'asc' ? 'desc' : 'asc';
+    const sortedData = orderBy(values.movies, [movie => movie.title.toLowerCase()], values.sortDirection);
+    setValues({
+      ...values,
+      movies: sortedData,
+      sortDirection
+    });
+  };
+
+  const getMovies = (list) => {
+    if (list) {
+      const movies = list.text.map(movie => {
+        movie.id = newItemId();
+        movie.title = movie["Title"];
+        movie.year = movie["Release Year"];
+        movie.format = movie["Format"];
+        movie.stars = movie["Stars"];
+        return movie;
+      });
+      if (values.movies) {
+        const newMovieList = [...values.movies, ...movies];
+        setValues({
+          ...values,
+          alertNotUploaded: false,
+          moviesToSort: newMovieList,
+          movies: newMovieList
+        });
+      } else {
+        setValues({
+          ...values,
+          alertNotUploaded: false,
+          movies: movies,
+          moviesToSort: movies
+        });
+      }
+    } else {
+      setValues({
+        ...values,
+        alertNotUploaded: true
+      });
+    }
+  };
+
+  return (
+      <div className={'container'}>
+        <button onClick={handleSort}>Sort by name</button>
+        <Filter searchQuery={searchByQuery}/>
+        <h1 className={values.noResults ? 'no-results' : 'display-none'}>No results</h1>
+        <Upload getMovieList={getMovies}/>
+        {values.alertNotUploaded || !values.movies ? (
+          <p className={'no-results'}>Movies are not uploaded yet</p>) : (
+          <ol>
+            {values.movies.map((movie, index) => (
+              <Movie
+                key={index}
+                data={movie}
+                data-index={index}
+                //TODO fix this arrow function
+                delMovie={() => deleteMovie(index)}
+              />
+            ))}
+          </ol>
+        )}
+        <AddMovie getNewMovie={addMovie}
+                  movieList={values.moviesToSort}
+        />
+      </div>
+  );
+}

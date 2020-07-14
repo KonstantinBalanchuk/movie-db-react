@@ -1,65 +1,54 @@
-import React from 'react';
-import './index.scss';
+import React, {useState, useEffect} from 'react';
 import Confirmation from "../Confirmation";
+import './index.scss';
 
-class Movie extends React.Component {
-    state = {
-        open: false,
-        confirmed: false,
-        showInfo: false
-    };
-    show = () => {
-        this.setState({
-            open: true
-        })
-    };
+export default function Movie(props) {
+  const [open, setOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
-    options = (status) => {
-        console.log(status);
-        this.setState({
-            open: false,
-            confirmed: status.confirmed
-        }, this.delete);
-    };
-
-    delete() {
-        if(this.state.confirmed){
-            this.props.delMovie()
-        }
+  useEffect(() => {
+    if (confirmed) {
+      props.delMovie()
     }
-    toggleClass = () => {
-        const currentState = this.state.showInfo;
-        this.setState({
-            showInfo: !currentState
-        });
-    };
+  }, [open, confirmed]);
 
-    render() {
-        return (
-            <li>
-                <div className={'card'}>
-                    {!this.state.showInfo ? (
-                    <div>
-                        <p className={'title'}>{this.props.data.title}</p>
-                        <p className={'open-info'} onClick={this.toggleClass}>Show full information</p>
-                    </div>) :
-                    (
-                        <div className="info">
-                            <p>Title: <span className={'title'}>{this.props.data.title}</span></p>
-                            <p>Release Year: {this.props.data.year}</p>
-                            <p>Format: {this.props.data.format}</p>
-                            <p>Stars: {this.props.data.stars}</p>
-                            <p className={'open-info'} onClick={this.toggleClass}>Hide full information</p>
-                        </div>
-                    )}
-                    {this.state.open && (
-                        <Confirmation workWithModal={this.options}/>
-                    )}
-                    <button onClick={this.show}>Delete</button>
-                </div>
-            </li>
-        );
-    }
+  function show() {
+    setOpen(true);
+  }
+
+  function options(status) {
+    setOpen(false);
+    setConfirmed(status);
+  }
+
+  function toggleClass() {
+    setShowInfo(!showInfo);
+  }
+
+
+  return (
+    <li>
+      <div className={'card'}>
+        {!showInfo ? (
+            <div>
+              <p className={'title'}>{props.data.title}</p>
+              <p className={'open-info'} onClick={toggleClass}>Show full information</p>
+            </div>) :
+          (
+            <div className="info">
+              <p>Title: <span className={'title'}>{props.data.title}</span></p>
+              <p>Release Year: {props.data.year}</p>
+              <p>Format: {props.data.format}</p>
+              <p>Stars: {props.data.stars}</p>
+              <p className={'open-info'} onClick={toggleClass}>Hide full information</p>
+            </div>
+          )}
+        {open && (
+          <Confirmation workWithModal={options}/>
+        )}
+        <button onClick={show}>Delete</button>
+      </div>
+    </li>
+  );
 }
-
-export default Movie;
